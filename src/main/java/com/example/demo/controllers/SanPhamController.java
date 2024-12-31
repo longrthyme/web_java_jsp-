@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,18 +32,22 @@ public class SanPhamController {
 
     //add
     @PostMapping("/them")
-    public String themSanPham(@ModelAttribute SanPham sp, Model model) {
+    public String themSanPham(@ModelAttribute SanPham sp, Model model, RedirectAttributes redirectAttributes) {
         if (sp.getMa() == null || sp.getMa().isEmpty() ||
                 sp.getTen() == null || sp.getTen().isEmpty() ||
-                sp.getLoai() == null || sp.getLoai().isEmpty()) {
+                sp.getLoai() == null || sp.getLoai().isEmpty() ||
+                sp.getGia() == null || sp.getGia() == 0.0
+        ) {
 
             model.addAttribute("error", "Vui lòng điền đủ thông tin sản phẩm.");
             List<SanPham> list = sanPhamrepo.findAll();
             model.addAttribute("list", list);
-            return "san_pham/index";
+            return "san_pham/add";
         }
 
         sanPhamrepo.save(sp);
+        redirectAttributes.addFlashAttribute("success_added", "Them san pham thanh cong ");
+
         return "redirect:/san-pham/index";
     }
 
@@ -68,6 +73,11 @@ public class SanPhamController {
         return "redirect:/san-pham/index";
     }
 
+
+    @RequestMapping(value = "/them", method = RequestMethod.GET)
+    public String handleFormSubmission(Model model) {
+        return "san_pham/add";
+    }
 
     @GetMapping("/tim-kiem")
     public String searchSanPham(@RequestParam("searchTen") String searchTen,

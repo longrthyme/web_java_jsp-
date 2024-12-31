@@ -83,6 +83,10 @@
         table tbody tr {
             border-top: 1px solid #dee2e6;
         }
+           .form-container {
+               display: flex;
+               justify-content: flex-end;
+           }
 
         .pagination-container {
             display: flex;
@@ -165,31 +169,9 @@
         <div class="alert alert-danger">${error}</div>
     </c:if>
 
-    <div class="mb-4">
-        <h3>Thêm sản phẩm mới</h3>
-        <form action="/san-pham/them" method="post" onsubmit="return confirmAdd();" class="form-inline">
-            <div class="form-group mb-2">
-                <label for="ma" class="sr-only">Mã sản phẩm</label>
-                <input type="text" class="form-control" id="ma" name="ma" placeholder="Mã sản phẩm">
-            </div>
-            <div class="form-group mx-sm-3 mb-2">
-                <label for="ten" class="sr-only">Tên sản phẩm</label>
-                <input type="text" class="form-control" id="ten" name="ten" placeholder="Tên sản phẩm">
-            </div>
-            <div class="form-group mx-sm-3 mb-2">
-                <label for="loai" class="sr-only">Loại sản phẩm</label>
-                <input type="text" class="form-control" id="loai" name="loai" placeholder="Loại sản phẩm">
-            </div>
-            <div class="form-group mx-sm-3 mb-2">
-                <label for="trangThai" class="sr-only">Trạng thái</label>
-                <select class="form-control" id="trangThai" name="trangThai">
-                    <option value="true">Còn hàng</option>
-                    <option value="false">Hết hàng</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary mb-2">Thêm sản phẩm</button>
-        </form>
-    </div>
+  <form action="/san-pham/them" method="GET" class="form-container">
+     <button type="submit" class="btn btn-primary mb-2">Thêm sản phẩm</button>
+  </form>
 
     <div class="mb-4">
         <h3>Tìm kiếm sản phẩm</h3>
@@ -211,6 +193,14 @@
             <button type="submit" class="btn btn-success mb-2">Tìm kiếm</button>
         </form>
     </div>
+
+    <%-- Check for the error message and display it --%>
+    <c:if test="${not empty success_added}">
+           <div class="alert alert-success">
+            ${success_added}
+        </div>
+    </c:if>
+
 
     <c:if test="${not empty page}">
         <table class="table table-dark mt-4" id="productTable">

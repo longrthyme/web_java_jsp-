@@ -35,4 +35,7 @@
     
         @Column(name = "trang_thai")
         Boolean trangThai;
+
+        @Column(name = "gia")
+        Double gia;
     }
