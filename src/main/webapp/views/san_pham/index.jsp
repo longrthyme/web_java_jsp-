@@ -193,11 +193,12 @@
 
     <div class="mb-4">
         <h3>Tìm kiếm sản phẩm</h3>
-        <form action="/san-pham/tim-kiem" method="get" class="form-inline" onsubmit="return confirmSearch();">
+        <form action="/san-pham/tim-kiem" method="get" class="form-inline">
 
             <div class="form-group mx-sm-3 mb-2">
                 <label for="searchTen" class="sr-only">Tìm kiếm theo tên</label>
-                <input type="text" class="form-control" id="searchTen" name="searchTen" placeholder="Tìm theo tên">
+                <input type="text" class="form-control" id="searchTen" name="searchTen"
+                       placeholder="Tìm theo tên" value="${searchTen}">
             </div>
             <div class="form-group mx-sm-3 mb-2">
                 <label for="searchTrangThai" class="sr-only">Tìm kiếm theo trạng thái</label>
@@ -258,25 +259,63 @@
             </tbody>
         </table>
 
-        <!-- Phân trang -->
-        <div>
-            <c:if test="${page.hasPrevious()}">
-                <a href="/san-pham/tim-kiem?searchTen=${searchTen}&page=${page.number-1}"> << </a>
-            </c:if>
-            <c:forEach begin="0" end="${page.totalPages - 1}" var="i">
-                <c:choose>
-                    <c:when test="${i == page.number}">
-                        <strong>${i + 1}</strong>
-                    </c:when>
-                    <c:otherwise>
-                        <a href="/san-pham/tim-kiem?searchTen=${searchTen}&page=${i}">${i + 1}</a>
-                    </c:otherwise>
-                </c:choose>
-            </c:forEach>
-            <c:if test="${page.hasNext()}">
-                <a href="/san-pham/tim-kiem?searchTen=${searchTen}&page=${page.number+1}"> >> </a>
-            </c:if>
-        </div>
+       <!-- Pagination -->
+       <div class="pagination mt-4">
+           <nav aria-label="Page navigation">
+               <ul class="pagination justify-content-center">
+                   <!-- Previous Page -->
+                   <c:if test="${page.hasPrevious()}">
+                       <li class="page-item">
+                           <a class="page-link"
+                              href="/san-pham/tim-kiem?searchTen=${searchTen}&page=${page.number - 1}
+                                   <c:if test='${not empty searchTrangThai}'>
+                                       &searchTrangThai=${searchTrangThai}
+                                   </c:if>"
+                              aria-label="Previous">
+                               <span aria-hidden="true">&laquo;</span>
+                           </a>
+                       </li>
+                   </c:if>
+
+                   <!-- Page Numbers -->
+                   <c:choose>
+                       <c:when test="${page.totalPages > 0}">
+                           <c:forEach begin="0" end="${page.totalPages - 1}" var="i">
+                               <li class="page-item ${i == page.number ? 'active' : ''}">
+                                   <a class="page-link"
+                                      href="/san-pham/tim-kiem?searchTen=${searchTen}&page=${i}
+                                           <c:if test='${not empty searchTrangThai}'>
+                                               &searchTrangThai=${searchTrangThai}
+                                           </c:if>">
+                                       ${i + 1}
+                                   </a>
+                               </li>
+                           </c:forEach>
+                       </c:when>
+                       <c:otherwise>
+                           <li class="page-item disabled">
+                               <span class="page-link">No results to display</span>
+                           </li>
+                       </c:otherwise>
+                   </c:choose>
+
+                   <!-- Next Page -->
+                   <c:if test="${page.hasNext()}">
+                       <li class="page-item">
+                           <a class="page-link"
+                              href="/san-pham/tim-kiem?searchTen=${searchTen}&page=${page.number + 1}
+                                   <c:if test='${not empty searchTrangThai}'>
+                                       &searchTrangThai=${searchTrangThai}
+                                   </c:if>"
+                              aria-label="Next">
+                               <span aria-hidden="true">&raquo;</span>
+                           </a>
+                       </li>
+                   </c:if>
+               </ul>
+           </nav>
+       </div>
+
     </c:if>
 
     <c:if test="${empty page}">

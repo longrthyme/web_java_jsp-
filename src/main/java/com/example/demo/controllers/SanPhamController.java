@@ -71,8 +71,13 @@ public class SanPhamController {
 
     @GetMapping("/tim-kiem")
     public String searchSanPham(@RequestParam("searchTen") String searchTen,
+                                @RequestParam(value = "searchTrangThai", required = false) String trangThai,
                                 @RequestParam("page") Optional<Integer> pageNo, // Nhận tham số số trang
                                 Model model) {
+
+
+
+
 
         // Số trang hiện tại, mặc định là 0 (trang đầu tiên)
         int currentPage = pageNo.orElse(0);
@@ -80,13 +85,24 @@ public class SanPhamController {
         // Kích thước của một trang, ở đây là 3 sản phẩm mỗi trang
         int pageSize = 3;
 
-        // Tạo đối tượng Pageable
+                // Tạo đối tượng Pageable
         Pageable pageable = PageRequest.of(currentPage, pageSize);
 
-        // Tìm kiếm sản phẩm theo tên với phân trang
-        Page<SanPham> page = sanPhamrepo.findByTenContaining(searchTen, pageable);
+        Page<SanPham> page;
+
+        if (trangThai != null && !trangThai.equals("")) {
+            Integer status = Boolean.valueOf(trangThai) ? 1 : 0;
+            System.out.println("trang thai " +  status);
+            page = sanPhamrepo.findByTenContainingAndTrangThai(searchTen, status  , pageable);
+            model.addAttribute("searchTrangThai", trangThai);
+        }
+        else {
+            // Tìm kiếm sản phẩm theo tên với phân trang
+            page = sanPhamrepo.findByTenContaining(searchTen, pageable);
+        }
 
         // Đưa thông tin vào model
+        model.addAttribute("searchValue", searchTen);
         model.addAttribute("page", page);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("searchTen", searchTen);  // Giữ lại giá trị tìm kiếm
